@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     use HasFactory;
-    // const CREATER_AT = 'created_at';
-    // const UPDATED_AT = 'updated_at';
+    const CREATER_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
     // protected $connection = "mysql";
     // protected $table = 'topics';
     // protected $primeryKey = 'id';
     // protected $keyType = 'int';
     // public $incrementing = true;
-    public $timestamps = false;
+    public $timestamps = true;
+    protected $fillable = [
+        'name',
+        'user_id',
+        'classroom_id',
+    ];
 }

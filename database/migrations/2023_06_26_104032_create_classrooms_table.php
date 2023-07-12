@@ -21,9 +21,9 @@ return new class extends Migration
             $table->string('cover_image_path')->nullable(); // to save the path of this file on the project files
             // $table->binary('cover_image_path'); //to save this file as a file in the database
             $table->string('theme')->nullable();
-            $table->foreignId('user_id')
+            $table->foreignId('user_id')->nullable()
                 ->constrained('users', 'id')
-                ->cascadeOnDelete(); //OnDelete('cascade');
+                ->nullOnDelete(); //OnDelete('cascade');
             $table->enum('status', ['active', 'archived'])->default('active');
             $table->timestamps();//created_at + Updated_at
         });
