@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>@yield('title')</title>
+    <title>@yield('title', config('app.name'))</title>
     {{-- <title>@yield('title')</title> --}}
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -26,20 +26,21 @@
             transition: 0.5s;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body>
     <header>
         <!-- place navbar here -->
-        <nav class="navbar navbar-expand-sm navbar-light bg-light p-0">
+        <nav class="navbar navbar-expand-sm navbar-light bg-light {{ !isset($id)?"pt-3 pb-2":"" }}">
             <div class="container">
-                <a class="navbar-brand" href="{{ route('Classroom.index') }}">{{ Config::get('app.name') }}</a>
+                <a class="navbar-brand" href="{{ route('classroom.index') }}">{{ Config::get('app.name') }}</a>
 
                 <div class="collapse navbar-collapse" id="collapsibleNavId">
                     <ul class="navbar-nav ms-auto me-auto mt-2 mt-lg-0">
                         @if (isset($id))
                             <li class="nav-item pt-2">
-                                <a class="nav-link active" href="{{ route('Classroom.show', ['id' => $id]) }}"
+                                <a class="nav-link active" href="{{ route('classroom.show', ['id' => $id]) }}"
                                     aria-current="page">Sharing Square</a>
                             </li>
                             <li class="nav-item pt-2">
@@ -71,6 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
         integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
     </script>
+    @stack('scripts')
 </body>
 
 </html>

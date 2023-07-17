@@ -1,79 +1,82 @@
 <?php use App\Models\Topic; ?>
-@extends('classroom.master')
-@section('title', "Classroom | $data->name")
+@extends('layout.master')
+@section('title', "classroom | $data->name")
+@push('styles')
+    <style>
+        #sitting-post {
+            text-align: center;
+            /* padding: 10px; */
+            /* background-color: red; */
+        }
+
+        #sitting-post:hover {
+            background-color: rgba(128, 128, 128, 0.339);
+            transition: 0.5s;
+        }
+
+        .post .card:hover {
+            background-color: rgba(128, 128, 128, 0.339);
+            transition: 0.5s;
+        }
+
+        #addTopic {
+            display: none;
+            border: none;
+            background-color: rgba(128, 128, 128, 0.51);
+            height: 100vh;
+            padding: 20%;
+            position: fixed;
+            width: 100%;
+            z-index: 10;
+            top: 0;
+            right: 0;
+        }
+
+        #editTopic {
+            display: none;
+            border: none;
+            background-color: rgba(128, 128, 128, 0.51);
+            height: 100vh;
+            padding: 20%;
+            position: fixed;
+            width: 100%;
+            z-index: 10;
+            top: 0;
+            right: 0;
+        }
+
+        #topic {
+            z-index: 100;
+        }
+
+        #addTopicButton {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+        }
+
+        #editTopicButton {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: none;
+            border: none;
+        }
+    </style>
+@endpush
+
 @section('content')
-    {{-- <?php 
-    echo "hello";
-    $topics = Topic::where('classroom_id', $id)->get(); 
-    ?> --}}
+    <?php
+    // echo 'hello';
+    // $topics = Topic::where('classroom_id', $id)->get();
+    ?>
     <main>
-        <style>
-            #sitting-post {
-                text-align: center;
-                /* padding: 10px; */
-                /* background-color: red; */
-            }
-
-            #sitting-post:hover {
-                background-color: rgba(128, 128, 128, 0.339);
-                transition: 0.5s;
-            }
-
-            .post .card:hover {
-                background-color: rgba(128, 128, 128, 0.339);
-                transition: 0.5s;
-            }
-
-            #addTopic {
-                display: none;
-                border: none;
-                background-color: rgba(128, 128, 128, 0.51);
-                height: 100vh;
-                padding: 20%;
-                position: fixed;
-                width: 100%;
-                z-index: 10;
-                top: 0;
-                right: 0;
-            }
-
-            #editTopic {
-                display: none;
-                border: none;
-                background-color: rgba(128, 128, 128, 0.51);
-                height: 100vh;
-                padding: 20%;
-                position: fixed;
-                width: 100%;
-                z-index: 10;
-                top: 0;
-                right: 0;
-            }
-
-            #topic {
-                z-index: 100;
-            }
-
-            #addTopicButton {
-                width: 100%;
-                height: 100vh;
-                position: absolute;
-                top: 0;
-                right: 0;
-                background: none;
-                border: none;
-            }
-
-            #editTopicButton {
-                width: 100%;
-                height: 100vh;
-                position: absolute;
-                top: 0;
-                right: 0;
-                background: none;
-                border: none;
-            }
-        </style>
         <div id="addTopic">
             <button id="addTopicButton" onclick="close()"></button>
             <div class="container p-5">
@@ -82,7 +85,7 @@
                         <div id="topic" style='text-align: left;' class="card">
                             <div class="card-body">
                                 <form method="POST"
-                                    action="{{ route('Topic.store', ['url' => 'Classroom.show', 'id' => $id]) }}">
+                                    action="{{ route('Topic.store', ['url' => 'classroom.show', 'id' => $id]) }}">
                                     {{-- <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     {{ csrf_field() }} --}}
                                     <h4>Add Topic</h4>
@@ -112,13 +115,14 @@
                         <div id="topic" style='text-align: left;' class="card">
                             <div class="card-body">
                                 <form method="POST"
-                                    action="{{ route('Topic.update', ['url' => 'Classroom.show', 'id' => $id]) }}">
+                                    action="{{ route('Topic.update', ['url' => 'classroom.show', 'id' => $id]) }}">
                                     {{-- <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                 {{ csrf_field() }} --}}
                                     @csrf
                                     @method('put')
                                     <h4>Edit Topic</h4>
-                                    <select class="form-control my-2" id="selectTopic" name="id" onchange="editChoise()">
+                                    <select class="form-control my-2" id="selectTopic" name="id"
+                                        onchange="editChoise()">
                                         <option value="none" selected>select topic</option>
                                         @foreach ($topics as $tpc)
                                             <option value="{{ $tpc->id }}">{{ $tpc->name }}</option>
@@ -132,14 +136,18 @@
                                     </div>
 
                                     <div class="form-floating mb-3">
-                                        <input style="width: 100%;" type="submit" id="editButton" class="btn btn-primary disabled" value="Done!">
+                                        <input style="width: 100%;" type="submit" id="editButton"
+                                            class="btn btn-primary disabled" value="Done!">
                                     </div>
                                 </form>
-                                <form class="form-floating mb-3" action="{{ route('Topic.delete',['url'=>'Classroom.show','id'=>$id]) }}" method="POST">
+                                <form class="form-floating mb-3"
+                                    action="{{ route('Topic.delete', ['url' => 'classroom.show', 'id' => $id]) }}"
+                                    method="POST">
                                     @csrf
                                     @method('delete')
                                     <input id="deleteTopicID" type="hidden" name="id" value="">
-                                    <input id="deleteTopicButton" style="width: 100%;" type="submit" class="btn btn-primary disabled" value="delete">
+                                    <input id="deleteTopicButton" style="width: 100%;" type="submit"
+                                        class="btn btn-primary disabled" value="delete">
                                 </form>
                             </div>
                         </div>
@@ -147,40 +155,10 @@
                 </div>
             </div>
         </div>
-        <script>
-            // استهدف الزر بواسطة معرفه
-            const button = document.getElementById('addTopicButton');
-            const edit = document.getElementById('editTopicButton');
 
-            // أضف الحدث onClick إلى الزر
-            button.onclick = function() {
-                // اكتب الوظيفة التي ترغب في تنفيذها هنا
-                document.getElementById('addTopic').style.display = "none";
-            };
-            edit.onclick = function() {
-                // اكتب الوظيفة التي ترغب في تنفيذها هنا
-                document.getElementById('editTopic').style.display = "none";
-            };
-
-            function editChoise() {
-                var selector = document.getElementById("selectTopic");
-                if (selector.value == 'none') {
-                    document.getElementById("deleteTopicButton").classList.add('disabled');
-                    document.getElementById("editButton").classList.add('disabled');
-                    document.getElementById('TopicName').value = "";
-                    document.getElementById('deleteTopicID').value = "";
-                    return;
-                } else {
-                    document.getElementById("deleteTopicButton").classList.remove('disabled');
-                    document.getElementById("editButton").classList.remove('disabled');
-                    document.getElementById('TopicName').value = selector.options[selector.selectedIndex].textContent.trim();
-                    document.getElementById('deleteTopicID').value = selector.value;
-                }
-            }
-        </script>
         <div class="container">
             <br />
-            <div style="background: url('https://gstatic.com/classroom/themes/img_bookclub.jpg');  background-size: cover; border-radius: 25px;"
+            <div style="background: url('{{ Storage::disk('uploads')->url($data->cover_image_path); }}');  background-size: cover; border-radius: 25px;"
                 class="row justify-content-center align-items-center g-2 text-light px-3">
                 <h2 style="margin: 0; margin-top:80px">{{ $data->name }}</h2>
                 <h5 style="margin-bottom: 0;"">{{ $data->section }}</h5>
@@ -204,21 +182,6 @@
                                         class="btn btn-outline-secondary">edit</button>
                                 </div>
                             </div>
-                            <script>
-                                // استهدف الزر بواسطة معرفه
-                                const button1 = document.getElementById('showTopic');
-                                const button2 = document.getElementById('editTopicButton2');
-
-                                // أضف الحدث onClick إلى الزر
-                                button1.onclick = function() {
-                                    // اكتب الوظيفة التي ترغب في تنفيذها هنا
-                                    document.getElementById('addTopic').style.display = "block";
-                                };
-                                button2.onclick = function() {
-                                    // اكتب الوظيفة التي ترغب في تنفيذها هنا
-                                    document.getElementById('editTopic').style.display = "block";
-                                };
-                            </script>
                             @foreach ($topics as $value)
                                 <a style="width:100%" class="px-3 py-2 my-2 btn btn-success"
                                     href="{{ route('Topic.show', ['id' => $value->id]) }}">{{ $value->name }}</a><br>
@@ -341,3 +304,49 @@
         </div>
     </main>
 @endsection
+@push('scripts')
+    <script>
+        // استهدف الزر بواسطة معرفه
+        const button = document.getElementById('addTopicButton');
+        const edit = document.getElementById('editTopicButton');
+
+        // أضف الحدث onClick إلى الزر
+        button.onclick = function() {
+            // اكتب الوظيفة التي ترغب في تنفيذها هنا
+            document.getElementById('addTopic').style.display = "none";
+        };
+        edit.onclick = function() {
+            // اكتب الوظيفة التي ترغب في تنفيذها هنا
+            document.getElementById('editTopic').style.display = "none";
+        };
+
+        function editChoise() {
+            var selector = document.getElementById("selectTopic");
+            if (selector.value == 'none') {
+                document.getElementById("deleteTopicButton").classList.add('disabled');
+                document.getElementById("editButton").classList.add('disabled');
+                document.getElementById('TopicName').value = "";
+                document.getElementById('deleteTopicID').value = "";
+                return;
+            } else {
+                document.getElementById("deleteTopicButton").classList.remove('disabled');
+                document.getElementById("editButton").classList.remove('disabled');
+                document.getElementById('TopicName').value = selector.options[selector.selectedIndex].textContent.trim();
+                document.getElementById('deleteTopicID').value = selector.value;
+            }
+        }
+        // استهدف الزر بواسطة معرفه
+        const button1 = document.getElementById('showTopic');
+        const button2 = document.getElementById('editTopicButton2');
+
+        // أضف الحدث onClick إلى الزر
+        button1.onclick = function() {
+            // اكتب الوظيفة التي ترغب في تنفيذها هنا
+            document.getElementById('addTopic').style.display = "block";
+        };
+        button2.onclick = function() {
+            // اكتب الوظيفة التي ترغب في تنفيذها هنا
+            document.getElementById('editTopic').style.display = "block";
+        };
+    </script>
+@endpush

@@ -1,11 +1,11 @@
-@extends('classroom.master')
+@extends('layout.master')
 @section('title', 'classroom | edit')
 @section('content')
     <main>
         <div class="container">
             <div class="row justify-content-center align-items-center g-2">
                 <div class="container">
-                    <form method="POST" action="{{ route('Classroom.update', $data->id) }}">
+                    <form method="POST" action="{{ route('classroom.update', $data->id) }}" enctype="multipart/form-data">
                         {{-- <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         {{ csrf_field() }} --}}
                         @csrf
@@ -16,33 +16,47 @@
 
                         {{-- <h1>{{ $data->id }}</h1> --}}
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="name" id="name" value="{{ $data->name }}"
-                                placeholder="Class Name">
+                            <input type="text" @class(['form-control', 'is-invalid' => $errors->has('name')]) name="name" id="name"
+                                value="{{ old('name',$data->name) }}" placeholder="Class Name">
                             <label for="name">Class Name</label>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="section" id="section"
-                                value="{{ $data->section }}" placeholder="Section">
+                            <input type="text" @class(['form-control', 'is-invalid' => $errors->has('section')]) name="section" id="section"
+                                value="{{ old('section',$data->section) }}" placeholder="Section">
                             <label for="section">Section</label>
+                            @error('section')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="subject" id="subject"
-                                value="{{ $data->subject }}" placeholder="Subject">
+                            <input type="text" @class(['form-control', 'is-invalid' => $errors->has('subject')]) name="subject" id="subject"
+                                value="{{ old('subject',$data->subject) }}" placeholder="Subject">
                             <label for="subject">Subject</label>
+                            @error('subject')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="room" id="room" placeholder="Room"
-                                value="{{ $data->room }}">
+                            <input type="text" @class(['form-control', 'is-invalid' => $errors->has('room')]) name="room" id="room" placeholder="Room"
+                                value="{{ old('room',$data->room) }}">
                             <label for="room">Room</label>
+                            @error('room')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="file" class="form-control" name="cover_image" id="cover_image"
-                                placeholder="cover_image">
+                            <input type="file" @class(['form-control', 'is-invalid' => $errors->has('cover_image')]) name="cover_image" id="cover_image">
                             <label for="cover_image" class="col-4 col-form-label">cover_image</label>
+                            @error('cover_image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-floating mb-3">
