@@ -21,4 +21,8 @@ class Topic extends Model
         'user_id',
         'classroom_id',
     ];
+
+    public function classworks(){
+        return $this->hasMany(Classwork::class,'topic_id','id');
+    }
 }

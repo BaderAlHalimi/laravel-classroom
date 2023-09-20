@@ -5,49 +5,65 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClassroomRequest;
 use App\Models\classroom;
 use App\Models\Topic;
+use Exception;
+use GuzzleHttp\Psr7\Query;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\MergeValue;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class classroomsController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     function index()
     {
         // $classes = classroom::all(); // Collection object
         $classes = classroom::orderBy('name', 'DESC')->get(); // Collection object
+        $id = Auth::id();
         // return 'hello';
         return view(
             'classroom.index',
             [
                 'success' => session('success'),
-                'name' => 'Bader Halimi',
-                'title' => 'Web Designer',
-                'social' => ['facebook', 'youtube', 'twitter', 'instagram'],
-                'classes' => $classes
+                'classes' => $classes,
+                'id' => $id,
             ]
         );
     }
 
     function edit($id)
     {
-        $data = classroom::find($id);
+        $data = classroom::findOrFail($id);
+        if (!$data) {
+            abort(404, "this classroom not found!");
+        }
         // return 'hello';
         return view('classroom.edit', ['data' => $data]);
     }
     function show($id)
     {
         $topics = Topic::where('classroom_id', $id)->get();
-        $data = classroom::findOrFail($id);
+        $data = classroom::where('id', $id)->first();
         if (!$data) {
             abort('404');
         }
+        // dd($data);
+        $classworks = $data->classworks;
         // return 'hello';
-        return view('classroom.show', ['data' => $data, 'id' => $id, 'topics' => $topics]);
+        $response = response()->view('classroom.show', ['data' => $data, 'id' => $id, 'topics' => $topics, 'classworks' => $classworks]);
+        $response->header('Cache-Control', 'public, max-age=600'); // تعيين Cache-Control بالقيم المناسبة
+        return $response;
     }
     function create()
     {
@@ -83,11 +99,26 @@ class classroomsController extends Controller
         // $classroom->save();
         // $request['code'] = Str::random(8);
         $validated['code'] = Str::random(8);
+        $validated['user_id'] = Auth::id();
         // $request->merge(['code' => Str::random(8)]);
         // dd($request->all());
         // exit;
         // $classroom = classroom::create($request->all());
-        classroom::create($validated);
+        DB::beginTransaction();
+        try {
+            $classroom = classroom::create($validated);
+            DB::table('classroom_user')->insert([
+                'classroom_id'  => $classroom->id,
+                'user_id'       => Auth::id(),
+                'role'          => 'teacher'
+            ]);
+            DB::commit();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            return back()
+                ->with('error', $e->getMessage())
+                ->withInput();
+        }
 
 
         // $classroom = new classroom();
@@ -154,15 +185,23 @@ class classroomsController extends Controller
         // $classroom->fill($request->all())->save();
         // $classroom->forceFill($request->all())->save();
     }
-    function destroy(classroom $classroom)
+    function destroy($id)
     {
+        $classroom = Classroom::find($id);
         // classroom::destroy($id);
 
         // classroom::where('id', '=',$id)->delete();
 
         // $classroom = classroom::find($id);
-        $classroom->delete();
-        Storage::disk(classroom::$disk)->delete($classroom->cover_image_path);
+        DB::beginTransaction();
+        try {
+            $classroom->delete();
+            Storage::disk(classroom::$disk)->delete($classroom->cover_image_path);
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            // dd($e->getMessage());
+        }
 
 
         //PRG; Post Redirect Get

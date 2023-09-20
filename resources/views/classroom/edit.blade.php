@@ -13,9 +13,22 @@
                         {{-- <input type="hidden" name="_method" value="put"> --}}
                         {{-- {{ method_field('put') }} --}}
                         @method('put')
+                        <x-form-component name="name" label="Class Name" value="{{ $data->name }}" />
+                        <x-form-component name="section" label="Section" value="{{ $data->section }}" />
+                        <x-form-component name="subject" label="Subject" value="{{ $data->subject }}" />
+                        <x-form-component name="room" label="Room" value="{{ $data->room }}" />
+                        <div class="form-floating mb-3">
+                            <select class="form-control" name="theme" id="theme">
+                                <option value="https://gstatic.com/classroom/themes/img_bookclub.jpg">green study</option>
+                                <option value="https://gstatic.com/classroom/themes/img_backtoschool.jpg">blue study
+                                </option>
+                            </select>
+                        </div>
+
+                        <x-form-component name="cover_image" type="file" label="cover_image" />
 
                         {{-- <h1>{{ $data->id }}</h1> --}}
-                        <div class="form-floating mb-3">
+                        {{-- <div class="form-floating mb-3">
                             <input type="text" @class(['form-control', 'is-invalid' => $errors->has('name')]) name="name" id="name"
                                 value="{{ old('name',$data->name) }}" placeholder="Class Name">
                             <label for="name">Class Name</label>
@@ -57,7 +70,7 @@
                             @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="form-floating mb-3">
                             <button type="submit" class="btn btn-primary">edit</button>

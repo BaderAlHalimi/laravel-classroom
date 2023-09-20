@@ -49,8 +49,13 @@ class TopicController extends Controller
     function show($id)
     {
     }
-    function destroy(Request $request, $url, $id = null)
+    function destroy(Request $request)
     {
+        // dd($request->query('url'));
+        // dd($request->query('id'));
+        // exit;
+        $url = $request->query('url');
+        $id = $request->query('id');
         Topic::destroy($request->id);
 
         if (!$id) {
