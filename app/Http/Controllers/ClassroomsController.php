@@ -25,6 +25,7 @@ class classroomsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('subscribed')->only('create','store');
     }
     function index()
     {

@@ -229,7 +229,7 @@
                                     @csrf
                                     <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                     <input type="hidden" name="period" value="3">
-                                    <button type="button"
+                                    <button type="submit"
                                         class="w-100 btn btn-lg @if ($plan->featured == 1) btn-success @else btn-outline-primary @endif">{{ __('Subscribe') }}</button>
                                 </form>
                             </div>

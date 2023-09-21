@@ -5,11 +5,14 @@ use App\Http\Controllers\ClassroomUserController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PlansController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\Webhooks\StripeController;
 use App\Models\ClassroomUser;
 use App\Models\Comment;
 use App\Models\Post;
@@ -44,8 +47,17 @@ Route::get('plans', [PlansController::class, 'index'])
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('subscription/{subscription}/pay', [PaymentsController::class, 'create'])
+        ->name('checkout');
+    
     Route::post('subscriptions', [SubscriptionsController::class, 'store'])
         ->name('subscriptions.store');
+    Route::post('payments', [PaymentsController::class, 'store'])
+        ->name('payments.store');
+    Route::get('payments/{subscriptions}/success', [PaymentsController::class, 'success'])
+        ->name('payments.success');
+    Route::get('payments/{subscriptions}/cancel', [PaymentsController::class, 'cancel'])
+        ->name('payments.cancel');
 
     Route::get('/classroom/{classroom}/join', [JoinClassroomController::class, 'create'])
         ->name('classroom.join');
@@ -81,3 +93,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('submissions/{submission}/file', [SubmissionController::class, 'file'])->name('submissions.file');
 });
+
+Route::post('/payments/stripe/webhook', StripeController::class);
